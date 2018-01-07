@@ -2,7 +2,7 @@ from os.path import expandvars
 import six
 from six.moves import configparser as CP
 from sqlalchemy.engine.url import URL
-
+import re
 
 def parse(cell, config):
     """Separate input into (connection info, SQL statement)"""
@@ -50,5 +50,8 @@ def parse_sql_flags(sql):
         trimmed_sql =  " ".join(words[1:])
     elif num_words >= 2 and words[1] == '<<':
         flags['result_var'] = words[0]
+        alpha_numeric_regex = "^[a-zA-Z]+[a-zA-Z0-9_]*$"
+        if not re.match(alpha_numeric_regex, flags['result_var']):
+             raise ValueError('Invalid variable name %s. Variable name must start with alphabet followed by letters, underscores or digits.' % flags['result_var'])
         trimmed_sql = " ".join(words[2:])
     return (flags, trimmed_sql.strip())

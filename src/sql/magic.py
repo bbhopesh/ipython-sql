@@ -115,9 +115,11 @@ class SqlMagic(Magics, Configurable):
 
                 if flags.get('result_var'):
                     result_var = flags['result_var']
-                    print("Returning data to local variable {}".format(result_var))
-                    self.shell.user_ns.update({result_var: result})
-                    return None
+                    print("Saving data to local variable {}['result']".format(result_var))
+                    print("Saving query to local variable {}['query']".format(result_var))
+                    result_and_query = {'result' : result, 'query' : parsed['sql']}
+                    self.shell.user_ns.update({result_var: result_and_query})
+                    return result
 
                 #Return results into the default ipython _ variable
                 return result

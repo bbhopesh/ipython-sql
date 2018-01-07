@@ -18,7 +18,8 @@ install_requires = [
     'ipython-genutils>=0.1.0',
 ]
 
-
+# Manually installing before hand.
+install_requires = []
 setup(name='ipython-sql',
     version=version,
     description="RDBMS access via IPython",
