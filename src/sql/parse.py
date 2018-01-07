@@ -11,7 +11,6 @@ def parse(cell, config):
     if not parts:
         return {'connection': '', 'sql': '', 'flags': {}}
     parts[0] = expandvars(parts[0])  # for environment variables
-
     if parts[0].startswith('[') and parts[0].endswith(']'):
         section = parts[0].lstrip('[').rstrip(']')
         parser = CP.ConfigParser()
@@ -53,5 +52,8 @@ def parse_sql_flags(sql):
         alpha_numeric_regex = "^[a-zA-Z]+[a-zA-Z0-9_]*$"
         if not re.match(alpha_numeric_regex, flags['result_var']):
              raise ValueError('Invalid variable name %s. Variable name must start with alphabet followed by letters, underscores or digits.' % flags['result_var'])
-        trimmed_sql = " ".join(words[2:])
+        query_start_point = sql.find('<<') + 2
+        #trimmed_sql = " ".join(words[2:])
+        # Joining by space destroys comments out everything after first single line comment. Preserving original spacing now.
+        trimmed_sql = sql[query_start_point:].strip()
     return (flags, trimmed_sql.strip())

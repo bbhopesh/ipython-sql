@@ -46,6 +46,9 @@ class SqlMagic(Magics, Configurable):
 
         # Add ourself to the list of module configurable via %config
         self.shell.configurables.append(self)
+    
+    def get_cell_contents(self, cell):
+        return '\n'.join([s.strip() for s in cell.splitlines() if not s.strip().startswith('#') and not s.strip().startswith('--')])
 
     @needs_local_scope
     @line_magic('sql')
@@ -78,7 +81,8 @@ class SqlMagic(Magics, Configurable):
         # save globals and locals so they can be referenced in bind vars
         user_ns = self.shell.user_ns.copy()
         user_ns.update(local_ns)
-
+	# Remove beging and end solution markings.
+        cell = self.get_cell_contents(cell)
         parsed = sql.parse.parse('%s\n%s' % (line, cell), self)
         flags = parsed['flags']
         try:
